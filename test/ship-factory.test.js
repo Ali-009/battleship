@@ -14,12 +14,9 @@ test('Test Ship Object Instantiation 2', () => {
     expect(patrolBoat.shipCoordinates).toEqual(['A1','A2']);
 });
 
-test('Hit function test', () => {
-    const battleship = ShipFactory.createShip(4, ['D5','G5']);
-    battleship.hit('E5');
-    battleship.hit('G5');
-    expect(battleship.hitSpots).toEqual(['E5','G5']);
-});
+/*Testing for the hit function is redundant and over specific, as the function doesn't produce a direct public side-effect*/
+//Keep in mind that hitSpots shouldn't be a publicly accessible property
+
 //A submarine sinks after three hits
 test('isSunk Function Test', () => {
     const submarine = ShipFactory.createShip(3, ['F3','H3']);
