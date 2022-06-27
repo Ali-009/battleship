@@ -1,5 +1,5 @@
 
-function createShip(shipLength, shipCoordinates){
+function createShip(shipName, shipCoordinates){
     
     let hitSpots = [];
     //A function to create an array of occupiedCells
@@ -51,6 +51,7 @@ function createShip(shipLength, shipCoordinates){
     }
 
     const occupiedCells = occupyCells(shipCoordinates);
+    const shipLength = occupiedCells.length;
     const hit = function(position){
         return hitSpots.push(position);
     }
@@ -60,7 +61,7 @@ function createShip(shipLength, shipCoordinates){
         : false;
     }
 
-    return {shipLength, shipCoordinates, hit, isSunk, occupiedCells};
+    return {shipName, shipCoordinates, shipLength, hit, isSunk};
 }
 
 module.exports = {createShip}
