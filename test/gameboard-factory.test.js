@@ -9,6 +9,15 @@ test('Gameboard Object Instantiation Test 1', () => {
     expect(gameBoard.playerName).toBe('Charles');
 });
 
+test('Test for placing a ship', () => {
+    const gameBoard = GameboardFactory.createGameboard('James');
+    gameBoard.placeShip('Patrol Boat',['B2','B3']);
+    gameBoard.placeShip('Submarine',['C5','E5']);
+    gameBoard.placeShip('Carrier', ['A1','A5']);
+    /*Testing for the direct public side effect of running placeShip*/
+    expect(gameBoard.shipArray.length).toBe(3);
+});
+
 /*Testing the methods of gameBoard objects will require the use of mocks, as those objects are coupled to ship objects*/
 
 //Before testing the public interface of gameBoard, I should start working on private methods that describe the actual board
