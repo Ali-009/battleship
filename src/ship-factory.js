@@ -4,7 +4,10 @@ function createShip(shipName, shipCoordinates){
     let hitSpots = [];
     //A function to create an array of occupiedCells
     const occupyCells = function (shipCoordinates){
-        let occupiedCells = shipCoordinates;
+        let occupiedCells = [];
+        /*The two lines below should make occupiedCells a deep copy of shipCoordinates*/
+        occupiedCells[0] = shipCoordinates [0];
+        occupiedCells[1] = shipCoordinates[1];
         const columnNotation = ['A','B','C','D','E','F','G'
             ,'H','I','J'];
         let startPoint;
