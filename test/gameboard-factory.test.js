@@ -18,11 +18,19 @@ test('Placing a ship', () => {
     expect(gameBoard.shipArray.length).toBe(3);
 });
 
-test('Prevent invalid ship placement', () => {
+test('Prevent ship overlap', () => {
     const gameBoard = GameboardFactory.createGameboard('noob');
     gameBoard.placeShip('Carrier',['A1','A5']);
     expect(() => {
         gameBoard.placeShip('BattleShip',['A3','D3'])
+    }).toThrow('Cannot place ships in overlapping positions');
+})
+
+test('Prevent ship overlap 2', () => {
+    const gameBoard = GameboardFactory.createGameboard('noob');
+    gameBoard.placeShip('Carrier',['C5','G5']);
+    expect(() => {
+        gameBoard.placeShip('BattleShip',['E3','E7'])
     }).toThrow('Cannot place ships in overlapping positions');
 })
 

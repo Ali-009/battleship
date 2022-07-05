@@ -6,14 +6,20 @@ function createGameboard(playerName){
     let shipArray = [];
     let missedAttacks = [];
     const placeShip = function(shipName, shipCoordinates){
+        const shipToBePlaced = ShipFactory.createShip(shipName, shipCoordinates);
         /*Check if the starting or ending coordinates are already occupied by a ship*/
-        let occupied = shipArray.find(
-            (ship) => ship.isOccupying(shipCoordinates[0])
-            || ship.isOccupying(shipCoordinates[1])
-        );
+        let occupied = shipArray.find((ship) => {
+            for(let i = 0; 
+                i < shipToBePlaced.occupiedCells.length;
+                i++){
+                    /*Check whether a ship on the board overlaps with a shipToBePlaced*/
+                    if(ship.isOccupying(shipToBePlaced.occupiedCells[i])){
+                        return true;
+                    }
+                }
+        });
         if(!occupied){
-            const ship = ShipFactory.createShip(shipName, shipCoordinates);
-            shipArray.push(ship);
+            shipArray.push(shipToBePlaced);
         } else {
             throw new Error('Cannot place ships in overlapping positions');
         }

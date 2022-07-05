@@ -67,7 +67,7 @@ function createShip(name, shipCoordinates){
         : false;
     }
 
-    return {name, shipCoordinates, shipLength, hit, isSunk, isOccupying};
+    return {name, shipCoordinates, shipLength, occupiedCells, hit, isSunk, isOccupying};
 }
 
 module.exports = {createShip}
