@@ -58,13 +58,16 @@ function createShip(shipName, shipCoordinates){
     const hit = function(position){
         return hitSpots.push(position);
     }
+    const isOccupying = function(coordinates){
+        return occupiedCells.includes(coordinates);
+    }
     const isSunk = function(){
         return hitSpots.length === shipLength
         ? true
         : false;
     }
 
-    return {shipName, shipCoordinates, shipLength, hit, isSunk};
+    return {shipName, shipCoordinates, shipLength, hit, isSunk, isOccupying, hitSpots};
 }
 
 module.exports = {createShip}
