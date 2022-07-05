@@ -1,5 +1,5 @@
 
-function createShip(shipName, shipCoordinates){
+function createShip(name, shipCoordinates){
     
     let hitSpots = [];
     //A function to create an array of occupiedCells
@@ -67,7 +67,7 @@ function createShip(shipName, shipCoordinates){
         : false;
     }
 
-    return {shipName, shipCoordinates, shipLength, hit, isSunk, isOccupying};
+    return {name, shipCoordinates, shipLength, hit, isSunk, isOccupying};
 }
 
 module.exports = {createShip}
