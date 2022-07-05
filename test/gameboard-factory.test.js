@@ -9,7 +9,7 @@ test('Gameboard Object Instantiation Test 1', () => {
     expect(gameBoard.playerName).toBe('Charles');
 });
 
-test('Test for placing a ship', () => {
+test('Placing a ship', () => {
     const gameBoard = GameboardFactory.createGameboard('James');
     gameBoard.placeShip('Patrol Boat',['B2','B3']);
     gameBoard.placeShip('Submarine',['C5','E5']);
@@ -18,7 +18,15 @@ test('Test for placing a ship', () => {
     expect(gameBoard.shipArray.length).toBe(3);
 });
 
-test('Test for receiving successful attacks', () => {
+test('Prevent invalid ship placement', () => {
+    const gameBoard = GameboardFactory.createGameboard('noob');
+    gameBoard.placeShip('Carrier',['A1','A5']);
+    expect(() => {
+        gameBoard.placeShip('BattleShip',['A3','D3'])
+    }).toThrow('Cannot place ships in overlapping positions');
+})
+
+test('Receive successful attacks', () => {
     const gameBoard = GameboardFactory.createGameboard('John');
     gameBoard.placeShip('Patrol Boat',['B2','B3']);
     gameBoard.placeShip('Submarine',['C5','E5']);
@@ -33,7 +41,7 @@ test('Test for receiving successful attacks', () => {
     expect(gameBoard.shipArray[2].isSunk()).toBe(true);
 });
 
-test('Test for receiving successful attacks 2', () => {
+test('Receive successful attacks 2', () => {
     const gameBoard = GameboardFactory.createGameboard('John');
     gameBoard.placeShip('Patrol Boat',['B2','B3']);
     gameBoard.placeShip('Submarine',['C5','E5']);
@@ -45,7 +53,7 @@ test('Test for receiving successful attacks 2', () => {
     expect(gameBoard.shipArray[1].isSunk()).toBe(false);
 });
 
-test('Test for missing an attack', () => {
+test('Missing an attack', () => {
     const gameBoard = GameboardFactory.createGameboard('John');
     gameBoard.placeShip('Patrol Boat',['B2','B3']);
     gameBoard.placeShip('Submarine',['C5','E5']);
@@ -54,6 +62,45 @@ test('Test for missing an attack', () => {
     gameBoard.receiveAttack('J10');
     gameBoard.receiveAttack('J01');
     expect(gameBoard.missedAttacks).toEqual(['J10','J01']);
+})
+
+test('Game Is Over', () => {
+    const gameBoard = GameboardFactory.createGameboard('Jack');
+    //For the sake of simplicity, the board will only have three ships
+    gameBoard.placeShip('Patrol Boat',['B2','B3']);
+    gameBoard.placeShip('Submarine',['C5','E5']);
+    gameBoard.placeShip('Carrier', ['A1','A5']);
+
+    //sinking patrol boat
+    gameBoard.receiveAttack('B2');
+    gameBoard.receiveAttack('B3');
+    //sinking submarine
+    gameBoard.receiveAttack('C5');
+    gameBoard.receiveAttack('D5');
+    gameBoard.receiveAttack('E5');
+    //sinking the carrier
+    gameBoard.receiveAttack('A4');
+    gameBoard.receiveAttack('A1');
+    gameBoard.receiveAttack('A3');
+    gameBoard.receiveAttack('A2');
+    gameBoard.receiveAttack('A5');
+
+    expect(gameBoard.isGameOver()).toBe(true);
+})
+
+test('Game Is Not Over', () => {
+    const gameBoard = GameboardFactory.createGameboard('Jack');
+    //To avoid repetition, the board will only have three ships
+    gameBoard.placeShip('Patrol Boat',['B2','B3']);
+    gameBoard.placeShip('Submarine',['C5','E5']);
+    gameBoard.placeShip('Carrier', ['A1','A5']);
+
+    //sinking submarine
+    gameBoard.receiveAttack('C5');
+    gameBoard.receiveAttack('D5');
+    gameBoard.receiveAttack('E5');
+
+    expect(gameBoard.isGameOver()).toBe(false);
 })
 /*Testing the methods of gameBoard objects will require the use of mocks, as those objects are coupled to ship objects*/
 

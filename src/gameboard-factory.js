@@ -1,13 +1,22 @@
 /*Mocking the functionality of ShipFactory in our tests will only increase our work time for no reason.*/
-/*ShipFactory is a local module and not something like an external API, so there is no reason to mock it duirng testing.*/
+/*ShipFactory is a local module and not something like an external API, so there is no reason to mock it during testing.*/
 const ShipFactory = require('./ship-factory');
 
 function createGameboard(playerName){
     let shipArray = [];
     let missedAttacks = [];
     const placeShip = function(shipName, shipCoordinates){
-        const ship = ShipFactory.createShip(shipName, shipCoordinates);
-        shipArray.push(ship);
+        /*Check if the starting or ending coordinates are already occupied by a ship*/
+        let occupied = shipArray.find(
+            (ship) => ship.isOccupying(shipCoordinates[0])
+            || ship.isOccupying(shipCoordinates[1])
+        );
+        if(!occupied){
+            const ship = ShipFactory.createShip(shipName, shipCoordinates);
+            shipArray.push(ship);
+        } else {
+            throw new Error('Cannot place ships in overlapping positions');
+        }
     }
     const receiveAttack = function(attackedCoordinates){
         //lookup if a ship has been hit by the attack
@@ -21,7 +30,16 @@ function createGameboard(playerName){
             missedAttacks.push(attackedCoordinates);
         }
     }
-    return{playerName, shipArray, placeShip, receiveAttack, missedAttacks};
+    const isGameOver = function(){
+        let sunkShips 
+        = shipArray.filter((ship) => ship.isSunk());
+        if(sunkShips.length === shipArray.length){
+            return true;
+        } else {
+            return false;
+        }
+    }
+    return{playerName, shipArray, missedAttacks, placeShip, receiveAttack, isGameOver};
 }
 
 module.exports = {createGameboard};
