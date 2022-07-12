@@ -3,14 +3,8 @@ const GameboardFactory = require("../src/gameboard-factory");
 
 /*The player name computer should be reserved for single player against a very basic AI*/
 
-//Testing gameboard object creatinon
-test("Gameboard Object Instantiation Test 1", () => {
-  const gameBoard = GameboardFactory.createGameboard("Charles");
-  expect(gameBoard.playerName).toBe("Charles");
-});
-
 test("Placing a ship", () => {
-  const gameBoard = GameboardFactory.createGameboard("James");
+  const gameBoard = GameboardFactory.createGameboard();
   gameBoard.placeShip("Patrol Boat", ["B2", "B3"]);
   gameBoard.placeShip("Submarine", ["C5", "E5"]);
   gameBoard.placeShip("Carrier", ["A1", "A5"]);
@@ -19,7 +13,7 @@ test("Placing a ship", () => {
 });
 
 test("Prevent ship overlap", () => {
-  const gameBoard = GameboardFactory.createGameboard("noob");
+  const gameBoard = GameboardFactory.createGameboard();
   gameBoard.placeShip("Carrier", ["A1", "A5"]);
   expect(() => {
     gameBoard.placeShip("BattleShip", ["A3", "D3"]);
@@ -27,7 +21,7 @@ test("Prevent ship overlap", () => {
 });
 
 test("Prevent ship overlap 2", () => {
-  const gameBoard = GameboardFactory.createGameboard("noob");
+  const gameBoard = GameboardFactory.createGameboard();
   gameBoard.placeShip("Carrier", ["C5", "G5"]);
   expect(() => {
     gameBoard.placeShip("BattleShip", ["E3", "E7"]);
@@ -35,7 +29,7 @@ test("Prevent ship overlap 2", () => {
 });
 
 describe("Receiving Attacks", () => {
-  const gameBoard = GameboardFactory.createGameboard("John");
+  const gameBoard = GameboardFactory.createGameboard();
   gameBoard.placeShip("Patrol Boat", ["B2", "B3"]);
   gameBoard.placeShip("Submarine", ["C5", "E5"]);
   gameBoard.placeShip("Carrier", ["A1", "A5"]);
@@ -55,7 +49,7 @@ describe("Receiving Attacks", () => {
 });
 
 describe("Game Over", () => {
-  const gameBoard = GameboardFactory.createGameboard("Jack");
+  const gameBoard = GameboardFactory.createGameboard();
   //For the sake of simplicity, the board will only have three ships
   gameBoard.placeShip("Patrol Boat", ["B2", "B3"]);
   gameBoard.placeShip("Submarine", ["C5", "E5"]);

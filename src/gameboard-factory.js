@@ -2,7 +2,7 @@
 /*ShipFactory is a local module and not something like an external API, so there is no reason to mock it during testing.*/
 const ShipFactory = require("./ship-factory");
 
-function createGameboard(playerName) {
+function createGameboard() {
   let shipsOnBoard = [];
   let missedAttacks = [];
   const placeShip = function (shipName, shipCoordinates) {
@@ -47,7 +47,6 @@ function createGameboard(playerName) {
     }
   };
   return {
-    playerName,
     shipsOnBoard,
     missedAttacks,
     placeShip,

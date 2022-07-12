@@ -5,7 +5,7 @@ function createMatch(humanPlayerName){
     //This allows player objects to interact with other player objects
     function createPlayer(name){
         //Associating the Player with a gameBoard
-        let gameBoard = gameBoardFactory.createGameboard(name);
+        let gameBoard = gameBoardFactory.createGameboard();
         return{name, gameBoard};
     }
 
