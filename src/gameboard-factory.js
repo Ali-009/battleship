@@ -3,12 +3,12 @@
 const ShipFactory = require("./ship-factory");
 
 function createGameboard(playerName) {
-  let shipArray = [];
+  let shipsOnBoard = [];
   let missedAttacks = [];
   const placeShip = function (shipName, shipCoordinates) {
     const shipToBePlaced = ShipFactory.createShip(shipName, shipCoordinates);
     /*Check if the starting or ending coordinates are already occupied by a ship*/
-    let occupied = shipArray.find((ship) => {
+    let occupied = shipsOnBoard.find((ship) => {
       for (let i = 0; i < shipToBePlaced.occupiedCells.length; i++) {
         /*Check whether a ship on the board overlaps with a shipToBePlaced*/
         if (ship.isOccupying(shipToBePlaced.occupiedCells[i])) {
@@ -17,26 +17,30 @@ function createGameboard(playerName) {
       }
     });
     if (!occupied) {
-      shipArray.push(shipToBePlaced);
+      shipsOnBoard.push(shipToBePlaced);
     } else {
       throw new Error("Cannot place ships in overlapping positions");
     }
   };
   const receiveAttack = function (attackedCoordinates) {
     //lookup if a ship has been hit by the attack
-    let attackedShip = shipArray.find((ship) =>
+    let attackedShip = shipsOnBoard.find((ship) =>
       ship.isOccupying(attackedCoordinates)
     );
 
     if (attackedShip) {
       attackedShip.hit(attackedCoordinates);
+      //Attack is successful
+      return true;
     } else {
       missedAttacks.push(attackedCoordinates);
+      //Attack is unsuccessful
+      return false;
     }
   };
   const isGameOver = function () {
-    let sunkShips = shipArray.filter((ship) => ship.isSunk());
-    if (sunkShips.length === shipArray.length) {
+    let sunkShips = shipsOnBoard.filter((ship) => ship.isSunk());
+    if (sunkShips.length === shipsOnBoard.length) {
       return true;
     } else {
       return false;
@@ -44,7 +48,7 @@ function createGameboard(playerName) {
   };
   return {
     playerName,
-    shipArray,
+    shipsOnBoard,
     missedAttacks,
     placeShip,
     receiveAttack,
