@@ -21,7 +21,12 @@ test('Get Ship Coordinates on Empty Board', () => {
     .toEqual([['B8','B10'],['B8','B6'],['B8','D8']]);
 })
 
-test('Place Random Ships', () => {
+test('CPU Places Random Ships', () => {
     let match = GameModule.createMatch('Jane');
-    expect(match.cpu.placeRandomShips()).toBe(5);
+    match.cpu.placeRandomShips();
+    expect(match.humanPlayer.gameBoard.shipsOnBoard.length)
+    .toBe(0);
+    //The randomly placed ships belong only to the player that placed them
+    //In this case, the player is the cpu
+    expect(match.cpu.gameBoard.shipsOnBoard.length).toBe(5);
 })

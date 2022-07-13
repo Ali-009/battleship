@@ -22,21 +22,22 @@ function createMatch(humanPlayerName){
                 let startPoint = `${xStart + yStart.toString()}`;
                 let validShips 
                 = getPossibleShipCoordinates(startPoint, shipLengths[shipCounter]);
-                for(let j = 0; j < validShips.length; j++){
+                while(validShips.length != 0){
+                    let currentShipIndex = getRandomIntegerUpTo(validShips.length);
                     try{
                         //try to place at least one ship
                         //If ship placement fails an error will be thrown
                         //If it succeeds, we break from the loop
-                        gameBoard.placeShip(shipNames[shipCounter], validShips[getRandomIntegerUpTo(validShips.length)]);
+                        gameBoard.placeShip(shipNames[shipCounter], validShips[currentShipIndex]);
                         shipCounter++;
                         break;
                     } catch (err){
+                        validShips.splice(currentShipIndex, 1);
                         continue;
                     }
                 }
             }
             console.log(gameBoard.shipsOnBoard);
-            return gameBoard.shipsOnBoard.length;
         }
 
         return{name, gameBoard, placeRandomShips};
