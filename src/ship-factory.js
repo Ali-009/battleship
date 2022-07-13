@@ -14,8 +14,8 @@ function createShip(name, shipCoordinates) {
     let x2 = shipCoordinates[1].charAt(0);
 
     //The coordinates on the y-axis
-    let y1 = +shipCoordinates[0].charAt(1);
-    let y2 = +shipCoordinates[1].charAt(1);
+    let y1 = +shipCoordinates[0].slice(1);
+    let y2 = +shipCoordinates[1].slice(1);
 
     //If the ship has a vertical orientation
     if (x1 === x2) {
