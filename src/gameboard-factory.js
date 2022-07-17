@@ -4,6 +4,7 @@ const ShipFactory = require("./ship-factory");
 
 function createGameboard() {
   let shipsOnBoard = [];
+  let successfulAttacks = [];
   let missedAttacks = [];
   const placeShip = function (shipName, shipCoordinates) {
     const shipToBePlaced = ShipFactory.createShip(shipName, shipCoordinates);
@@ -29,12 +30,13 @@ function createGameboard() {
     );
 
     if (attackedShip) {
-      attackedShip.hit(attackedCoordinates);
       //Attack is successful
+      attackedShip.hit(attackedCoordinates);
+      successfulAttacks.push(attackedCoordinates);
       return true;
     } else {
-      missedAttacks.push(attackedCoordinates);
       //Attack is unsuccessful
+      missedAttacks.push(attackedCoordinates);
       return false;
     }
   };
@@ -48,6 +50,7 @@ function createGameboard() {
   };
   return {
     shipsOnBoard,
+    successfulAttacks,
     missedAttacks,
     placeShip,
     receiveAttack,

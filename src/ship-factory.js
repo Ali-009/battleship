@@ -27,7 +27,7 @@ function createShip(name, shipCoordinates) {
         endPoint = y1;
       }
       for (let i = startPoint + 1; i < endPoint; i++) {
-        occupiedCells.push(`${x1 + i.toString()}`);
+        occupiedCells.push(`${x1 + i}`);
       }
       return occupiedCells;
     } else if (y1 === y2) {

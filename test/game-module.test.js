@@ -1,12 +1,5 @@
 const GameModule = require('../src/game-module');
 
-test('Match Creation', () => {
-    let match = GameModule.createMatch('John');
-    //Test if both players have been created
-    expect(match.humanPlayer.name).toBe('John');
-    expect(match.cpu.name).toBe('Computer');
-});
-
 test('Get Ship Coordinates on Empty Board', () => {
     //Expecting a list of ships that start from the center of the grid
     expect(GameModule.getPossibleShipCoordinates('E5', 5))
@@ -22,11 +15,30 @@ test('Get Ship Coordinates on Empty Board', () => {
 })
 
 test('CPU Places Random Ships', () => {
-    let match = GameModule.createMatch('Jane');
+    let match = GameModule.createMatch();
     match.cpu.placeRandomShips();
     expect(match.humanPlayer.gameBoard.shipsOnBoard.length)
     .toBe(0);
     //The randomly placed ships belong only to the player that placed them
     //In this case, the player is the cpu
+    //console.log(match.cpu.gameBoard.shipsOnBoard);
     expect(match.cpu.gameBoard.shipsOnBoard.length).toBe(5);
 })
+
+test('AI Attack', () => {
+    let match = GameModule.createMatch();
+    //Test the attack functionality with random ships
+    match.cpu.placeRandomShips();
+    match.humanPlayer.placeRandomShips();
+
+    for(let i = 0; i < 10; i++){
+        match.attackFromAI();
+    }
+
+    //Compare the hitspots for the player to successful attacks
+    console.log(match.humanPlayer.gameBoard.shipsOnBoard);
+    console.log(match.cpu.gameBoard.successfulAttacks);
+    console.log(match.cpu.gameBoard.missedAttacks);
+}, 5000)
+
+
