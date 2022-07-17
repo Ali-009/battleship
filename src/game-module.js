@@ -40,73 +40,8 @@ function createMatch(humanPlayerName){
     let humanPlayer = createPlayer();
     let cpu = createPlayer();
 
-    //Even though the coordinates are random
-    //They need to be supplied as previous coordinates
-    //Are used as guides for subsequent coordinates
-    function attackFromAI(currentTarget, previousHits){
-        if(!previousHits){
-            currentTarget = getRandomCoordinates();
-            console.log(currentTarget);
-            previousHits = [];
-        }
-        let alreadyAttacked = humanPlayer.gameBoard.successfulAttacks.includes(currentTarget);
-        let alreadyMissedAttack = cpu.gameBoard.missedAttacks.includes(currentTarget);
+    function attackFromAI(){
 
-
-        if(!alreadyAttacked && !alreadyMissedAttack && previousHits.length === 0){
-            humanPlayer.gameBoard.receiveAttack(currentTarget);
-            console.log('first actual attack');
-            console.log(humanPlayer.gameBoard.successfulAttacks);
-            attackFromAI(currentTarget, previousHits.push(currentTarget)); 
-        }
-
-        if(previousHits.length === 1){
-            //Adjacent Cells are the length of a patrol boat
-            console.log('inside first hit');
-            let adjacentCells = getPossibleShipCoordinates(previousHits[0], 2);
-            let adjacentHit = adjacentCells[getRandomIntegerUpTo(adjacentCells.length - 1)][1]; 
-            humanPlayer.gameBoard.receiveAttack(adjacentHit);
-            attackFromAI(adjacentHit, previousHits);
-        } else if(previousHits.length > 1){
-            console.log('inside successive hit');
-            let lastIndex = previousHits.length - 1;
-            //The last set of coordinates
-            let xLast = previousHits[lastIndex].charAt(0);
-            let yLast = +previousHits[lastIndex].slice(1);
-
-            //The set of coordinates before the last ones
-            let xBeforeLast = previousHits[lastIndex - 1].charAt(0);
-            let yBeforeLast = +previousHits[lastIndex - 1].slice(1);
-
-            if(xLast === xBeforeLast){
-                if(yLast > yBeforeLast){
-                    let target = xLast + (yLast + 1);
-                    if(humanPlayer.gameBoard.receiveAttack(target)){
-                        attackFromAI(target, previousHits.push(target));
-                    }
-                } else if (yLast < yBeforeLast){
-                    let target = xLast + (yLast - 1);
-                    if(humanPlayer.gameBoard.receiveAttack(target)){
-                        attackFromAI(target, previousHits.push(target));
-                    }
-                }
-
-            } else if(yLast === yBeforeLast){
-                if(columnNotation.indexOf(xLast) > columnNotation.indexOf(xBeforeLast)){
-                    let targetIndex = columnNotation.indexOf(xLast) + 1;
-                    let target = `${columnNotation[targetIndex] + yLast}`;
-                    if(humanPlayer.gameBoard.receiveAttack(target)){
-                        attackFromAI(target, previousHits.push(target));
-                    }
-                } else if (columnNotation.indexOf(xLast) < columnNotation.indexOf(xBeforeLast)){
-                    let targetIndex = columnNotation.indexOf(xLast) - 1;
-                    let target = `${columnNotation[targetIndex] + yLast}`;
-                    if(humanPlayer.gameBoard.receiveAttack(target)){
-                        attackFromAI(target, previousHits.push(target));
-                    }
-                }
-            }
-        }
     }
 
     return {humanPlayer, cpu, createPlayer, attackFromAI};
