@@ -25,19 +25,14 @@ test('CPU Places Random Ships', () => {
     expect(match.cpu.gameBoard.shipsOnBoard.length).toBe(5);
 })
 
-/*test('AI Attack', () => {
+test('AI Attack', () => {
     let match = GameModule.createMatch();
-    //Test the attack functionality with random ships
     match.cpu.placeRandomShips();
     match.humanPlayer.placeRandomShips();
-
-    for(let i = 0; i < 10; i++){
+    console.log(match.humanPlayer.gameBoard.shipsOnBoard);
+    //test five attacks
+    for(let i = 0; i < 50; i++){
         match.attackFromAI();
     }
-
-    //Compare the hitspots for the player to successful attacks
-    console.log(match.humanPlayer.gameBoard.shipsOnBoard);
-    console.log(match.cpu.gameBoard.successfulAttacks);
-    console.log(match.cpu.gameBoard.missedAttacks);
-}, 5000)*/
-
+    console.log(match.humanPlayer.gameBoard.successfulAttacks);
+})
