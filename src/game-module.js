@@ -2,21 +2,23 @@ const gameBoardFactory = require('./gameboard-factory');
 
 const columnNotation = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
-function createMatch(humanPlayerName){
+function createMatch(){
     //The players are created within the context of a match
     //This allows player objects to interact with other player objects
     function createPlayer(){
         //Associating the Player with a gameBoard
         let gameBoard = gameBoardFactory.createGameboard();
 
+        //Any player has the ability to place ships randomly on their board
         function placeRandomShips(){
             const shipLengths = [2, 3, 3, 4, 5];
             const shipNames = ['Patrol Boat', 'Submarine', 'Destroyer', 'Battleship', 'Carrier'];
             let shipCounter = 0;
+            let boardCells = generateBoardCells();
             while(gameBoard.shipsOnBoard.length < 5){
-                let startPoint = getRandomCoordinates();
+                let currentRandomPoint = getRandomCoordinates(boardCells);
                 let validShips 
-                = getPossibleShipCoordinates(startPoint, shipLengths[shipCounter]);
+                = getValidBoardLines(currentRandomPoint, shipLengths[shipCounter]);
                 while(validShips.length != 0){
                     let currentShipIndex = getRandomIntegerUpTo(validShips.length);
                     try{
@@ -31,9 +33,11 @@ function createMatch(humanPlayerName){
                         continue;
                     }
                 }
+                //Remove the currentRandomPoint from the pool of boardCells
+                //This makes sure we don't attempt to use invalid board positions more than once
+                boardCells.splice(currentRandomPoint, 1);
             }
         }
-
         return{gameBoard, placeRandomShips};
     }
 
@@ -41,6 +45,7 @@ function createMatch(humanPlayerName){
     let cpu = createPlayer();
 
     function attackFromAI(){
+        let randomCoordinates = getRandomCoordinates();
 
     }
 
@@ -48,49 +53,56 @@ function createMatch(humanPlayerName){
 
 }
 
+//This can be used to avoid randomly guessing the same board cell twice
+function generateBoardCells(){
+    let boardCells = [];
+
+    for(let i = 0; i < columnNotation.length; i++){
+        for(let j = i*10; j < (i+1)*10; j++){
+            boardCells[j] = `${columnNotation[i] + (j-i*10+1)}`;
+        }
+    }
+
+    return boardCells;
+}
+
 function getRandomIntegerUpTo(max){
     return Math.floor(Math.random() * max);
 }
 
-function getRandomCoordinates(){
-    //Find a random coordinate on the x-axis
-    let xIndex = getRandomIntegerUpTo(10);
-    let xStart = columnNotation[xIndex];
-    //Find a random coordinate on the y-axis
-    let yStart = getRandomIntegerUpTo(10) + 1;
-    let startPoint = `${xStart + yStart}`;
-
-    return startPoint;
+function getRandomCoordinates(boardCellsPool){
+    return boardCellsPool[getRandomIntegerUpTo(boardCellsPool.length)];
 }
-
-function getPossibleShipCoordinates(startPoint, shipLength){
+//The goal of the function is to find valid lines in all directions
+//Given a starting point and a distance between starting and ending points
+function getValidBoardLines(startPoint, distance){
     //The goal of the function is to find valid sets of coordinates on a board assumed to be empty.
     //Starting points coordinates
     let xStart = startPoint.charAt(0);
     let yStart = +startPoint.slice(1);
-    let validShips = [];
-    let yEnd1 = yStart + (shipLength - 1);
+    let validLines = [];
+    let yEnd1 = yStart + (distance - 1);
     //Creating ships in all directions if possible
     //Downwards from the startPoint
     if(yEnd1 > yStart && yEnd1 <= 10){
-        validShips.push([startPoint, `${xStart + yEnd1}`]);
+        validLines.push([startPoint, `${xStart + yEnd1}`]);
     }
     //Upwards From the startPoint
-    let yEnd2 = yStart - (shipLength - 1);
+    let yEnd2 = yStart - (distance - 1);
     if(yStart > yEnd2 && yEnd2 >= 1){
-        validShips.push([startPoint, `${xStart + yEnd2}`]);
+        validLines.push([startPoint, `${xStart + yEnd2}`]);
     }
     //Horizontally to the left of startPoint
-    let xEnd1 = columnNotation.indexOf(xStart) + (shipLength - 1);
+    let xEnd1 = columnNotation.indexOf(xStart) + (distance - 1);
     if(xEnd1 > columnNotation.indexOf(xStart) && xEnd1 < columnNotation.length){
-        validShips.push([startPoint, `${columnNotation[xEnd1] + yStart}`]);
+        validLines.push([startPoint, `${columnNotation[xEnd1] + yStart}`]);
     }
     //Horizontally to the right of startPoint
-    let xEnd2 = columnNotation.indexOf(xStart) - (shipLength - 1);
+    let xEnd2 = columnNotation.indexOf(xStart) - (distance - 1);
     if(columnNotation.indexOf(xStart) > xEnd2 && xEnd2 >= 0){
-        validShips.push([startPoint, `${columnNotation[xEnd2] +yStart}`]);
+        validLines.push([startPoint, `${columnNotation[xEnd2] +yStart}`]);
     }
-    return validShips;
+    return validLines;
 }
 
-module.exports = {createMatch, getPossibleShipCoordinates};
+module.exports = {createMatch, getValidBoardLines, generateBoardCells};

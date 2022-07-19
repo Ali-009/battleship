@@ -2,15 +2,15 @@ const GameModule = require('../src/game-module');
 
 test('Get Ship Coordinates on Empty Board', () => {
     //Expecting a list of ships that start from the center of the grid
-    expect(GameModule.getPossibleShipCoordinates('E5', 5))
+    expect(GameModule.getValidBoardLines('E5', 5))
     .toEqual([['E5','E9'],['E5','E1'],['E5','I5'],['E5','A5']]);
 
     //Testing for when a ship has only two valid placements on an empty board
-    expect(GameModule.getPossibleShipCoordinates('A1', 3))
+    expect(GameModule.getValidBoardLines('A1', 3))
     .toEqual([['A1','A3'],['A1', 'C1']]);
 
     //Only three valid placements on an empty board
-    expect(GameModule.getPossibleShipCoordinates('B8', 3))
+    expect(GameModule.getValidBoardLines('B8', 3))
     .toEqual([['B8','B10'],['B8','B6'],['B8','D8']]);
 })
 
@@ -25,7 +25,7 @@ test('CPU Places Random Ships', () => {
     expect(match.cpu.gameBoard.shipsOnBoard.length).toBe(5);
 })
 
-test('AI Attack', () => {
+/*test('AI Attack', () => {
     let match = GameModule.createMatch();
     //Test the attack functionality with random ships
     match.cpu.placeRandomShips();
@@ -39,6 +39,5 @@ test('AI Attack', () => {
     console.log(match.humanPlayer.gameBoard.shipsOnBoard);
     console.log(match.cpu.gameBoard.successfulAttacks);
     console.log(match.cpu.gameBoard.missedAttacks);
-}, 5000)
-
+}, 5000)*/
 
