@@ -44,7 +44,7 @@ function createMatch(){
     let humanPlayer = createPlayer();
     let cpu = createPlayer();
     //A game mode where every hit a player gets, gives them an additional chance at hitting the board again
-    function quickAttackFromAI(){
+    function attackFromAI(){
         let boardCells = generateBoardCells();
         //Filter out cells that have already been attacked or missed
         let potentialTargets = getPotentialTargets(boardCells);
@@ -73,24 +73,36 @@ function createMatch(){
                     if(columnNotation.indexOf(x2) > columnNotation.indexOf(x1)){
                         do{
                             nextTarget = `${columnNotation[columnNotation.indexOf(nextTarget.charAt(0)) + 1] + y1}`;
-                            console.log(nextTarget);
+                            if(x2 === 'J' || humanPlayer.gameBoard.successfulAttacks.includes(nextTarget) || cpu.gameBoard.missedAttacks.includes(nextTarget)){
+                                attackFromAI();
+                                break;
+                            }
                         } while(humanPlayer.gameBoard.receiveAttack(nextTarget));
                     } else {
                         do{
                             nextTarget = `${columnNotation[columnNotation.indexOf(nextTarget.charAt(0)) - 1] + y1}`;
-                            console.log(nextTarget);
+                            if(x1 === 'A' || humanPlayer.gameBoard.successfulAttacks.includes(nextTarget) || cpu.gameBoard.missedAttacks.includes(nextTarget)){
+                                attackFromAI();
+                                break;
+                            }
                         } while(humanPlayer.gameBoard.receiveAttack(nextTarget));
                     }
                 } else if(x1 === x2){
                     if(y2 > y1){
                         do{
                             nextTarget = `${x1 + (+nextTarget.slice(1) + 1)}`;
-                            console.log(nextTarget);
+                            if(y2 === 10 || humanPlayer.gameBoard.successfulAttacks.includes(nextTarget) || cpu.gameBoard.missedAttacks.includes(nextTarget)){
+                                attackFromAI();
+                                break;
+                            }
                         } while(humanPlayer.gameBoard.receiveAttack(nextTarget));
                     } else {
                         do{
                             nextTarget = `${x1 + (+nextTarget.slice(1) - 1)}`;
-                            console.log(nextTarget);
+                            if(y1 === 1 || humanPlayer.gameBoard.successfulAttacks.includes(nextTarget) || cpu.gameBoard.missedAttacks.includes(nextTarget)){
+                                attackFromAI();
+                                break;
+                            }
                         } while(humanPlayer.gameBoard.receiveAttack(nextTarget));
                     }
                 }
@@ -110,7 +122,7 @@ function createMatch(){
         return potentialTargets;
     }
 
-    return {humanPlayer, cpu, createPlayer, quickAttackFromAI};
+    return {humanPlayer, cpu, createPlayer, attackFromAI};
 
 }
 //This can be used to avoid randomly guessing the same board cell twice
