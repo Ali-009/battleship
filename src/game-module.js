@@ -43,16 +43,11 @@ function createMatch(){
 
     let humanPlayer = createPlayer();
     let cpu = createPlayer();
-
-    function attackFromAI(){
+    //A game mode where every hit a player gets, gives them an additional chance at hitting the board again
+    function quickAttackFromAI(){
         let boardCells = generateBoardCells();
         //Filter out cells that have already been attacked or missed
-        let potentialTargets = boardCells.filter((cell) => {
-            let alreadyAttacked = humanPlayer.gameBoard.successfulAttacks.includes(cell);
-            let alreadyMissedAttack = cpu.gameBoard.missedAttacks.includes(cell);
-            //A potential target is one that we didn't attack or miss before
-            return !alreadyAttacked && !alreadyMissedAttack;
-        });
+        let potentialTargets = getPotentialTargets(boardCells);
 
         let randomTarget = getRandomCoordinates(potentialTargets);
         //Attack random target
@@ -60,13 +55,12 @@ function createMatch(){
         if(hit){
             //Use randomTargets to get adjacent cells
             let validLines = getValidBoardLines(randomTarget, 2);
-            let nextTargets = []
+            let adjacentCells = []
             for(let i = 0; i < validLines.length; i ++){
-                nextTargets.push(validLines[i][1]);
+                adjacentCells.push(validLines[i][1]);
             }
-            //Choose randomly between the cells adjacent to our previous hit
-            let nextTarget = getRandomCoordinates(nextTargets);
-            //Choose a cell such that we move in a straight line
+            //The random target is chosen from a set of potential targets out of the adjacent cells
+            let nextTarget = getRandomCoordinates(getPotentialTargets(adjacentCells));
             let successiveHit = humanPlayer.gameBoard.receiveAttack(nextTarget);
             if(successiveHit){
                 //Decide which direction forms a straight line
@@ -79,20 +73,24 @@ function createMatch(){
                     if(columnNotation.indexOf(x2) > columnNotation.indexOf(x1)){
                         do{
                             nextTarget = `${columnNotation[columnNotation.indexOf(nextTarget.charAt(0)) + 1] + y1}`;
+                            console.log(nextTarget);
                         } while(humanPlayer.gameBoard.receiveAttack(nextTarget));
                     } else {
                         do{
                             nextTarget = `${columnNotation[columnNotation.indexOf(nextTarget.charAt(0)) - 1] + y1}`;
+                            console.log(nextTarget);
                         } while(humanPlayer.gameBoard.receiveAttack(nextTarget));
                     }
                 } else if(x1 === x2){
                     if(y2 > y1){
                         do{
                             nextTarget = `${x1 + (+nextTarget.slice(1) + 1)}`;
+                            console.log(nextTarget);
                         } while(humanPlayer.gameBoard.receiveAttack(nextTarget));
                     } else {
                         do{
                             nextTarget = `${x1 + (+nextTarget.slice(1) - 1)}`;
+                            console.log(nextTarget);
                         } while(humanPlayer.gameBoard.receiveAttack(nextTarget));
                     }
                 }
@@ -101,10 +99,20 @@ function createMatch(){
 
     }
 
-    return {humanPlayer, cpu, createPlayer, attackFromAI};
+    function getPotentialTargets(boardCells){
+        let potentialTargets = boardCells.filter((cell) => {
+            let alreadyAttacked = humanPlayer.gameBoard.successfulAttacks.includes(cell);
+            let alreadyMissedAttack = cpu.gameBoard.missedAttacks.includes(cell);
+            //A potential target is one that we didn't attack or miss before
+            return !alreadyAttacked && !alreadyMissedAttack;
+        });
+
+        return potentialTargets;
+    }
+
+    return {humanPlayer, cpu, createPlayer, quickAttackFromAI};
 
 }
-
 //This can be used to avoid randomly guessing the same board cell twice
 function generateBoardCells(){
     let boardCells = [];

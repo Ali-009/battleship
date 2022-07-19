@@ -32,7 +32,7 @@ test('AI Attack', () => {
     console.log(match.humanPlayer.gameBoard.shipsOnBoard);
     //test five attacks
     for(let i = 0; i < 50; i++){
-        match.attackFromAI();
+        match.quickAttackFromAI();
     }
     console.log(match.humanPlayer.gameBoard.successfulAttacks);
 })
