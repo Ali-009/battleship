@@ -29,10 +29,10 @@ test('AI Attack', () => {
     let match = GameModule.createMatch();
     match.cpu.placeRandomShips();
     match.humanPlayer.placeRandomShips();
-    console.log(match.humanPlayer.gameBoard.shipsOnBoard);
-    //test five attacks
-    for(let i = 0; i < 50; i++){
-        match.attackFromAI();
-    }
+
+    match.attackFromAI();
     console.log(match.humanPlayer.gameBoard.successfulAttacks);
+    console.log(match.humanPlayer.gameBoard.missedAttacks);
+    expect(match.humanPlayer.gameBoard.successfulAttacks.length > 0 || match.humanPlayer.gameBoard.missedAttacks.length > 0)
+    .toBeTruthy();
 })
