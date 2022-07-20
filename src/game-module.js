@@ -128,7 +128,21 @@ function createMatch(){
         return !alreadyAttacked && !alreadyMissedAttack;
     }
 
-    return {humanPlayer, cpu, createPlayer, attackFromAI};
+    //If a player succeeds at attacking another, they get another chance to attack
+    function playRound(targetCoordinates){
+        let humanPlayerAttackSuccess = cpu.gameBoard.receiveAttack(targetCoordinates);
+        if(humanPlayerAttackSuccess){
+            //This will let the player go for another attack if their first attack
+            //is successful
+            return;
+        } else {
+            //The attack from AI handles successive attacks on its own
+            //It will only stop attacking the humanPlayer once it has missed an attack
+            attackFromAI();
+        }
+    }
+
+    return {humanPlayer, cpu, createPlayer, playRound, attackFromAI};
 
 }
 //This can be used to avoid randomly guessing the same board cell twice
