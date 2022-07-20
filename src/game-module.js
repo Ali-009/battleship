@@ -43,11 +43,11 @@ function createMatch(){
 
     let humanPlayer = createPlayer();
     let cpu = createPlayer();
-    //A game mode where every hit a player gets, gives them an additional chance at hitting the board again
+    
     function attackFromAI(){
         let boardCells = generateBoardCells();
         //Filter out cells that have already been attacked or missed
-        let potentialTargets = getPotentialTargets(boardCells);
+        let potentialTargets = getValidTargets(boardCells);
 
         let randomTarget = getRandomCoordinates(potentialTargets);
         //Attack random target
@@ -59,8 +59,10 @@ function createMatch(){
             for(let i = 0; i < validLines.length; i ++){
                 adjacentCells.push(validLines[i][1]);
             }
-            //The random target is chosen from a set of potential targets out of the adjacent cells
-            let nextTarget = getRandomCoordinates(getPotentialTargets(adjacentCells));
+            
+            let potentialAdjacentTargets = getValidTargets(adjacentCells);
+            //nextTarget is randomly chosen between cells adjacent to the first randomTarget
+            let nextTarget = getRandomCoordinates(potentialAdjacentTargets);
             let successiveHit = humanPlayer.gameBoard.receiveAttack(nextTarget);
             if(successiveHit){
                 //Decide which direction forms a straight line
@@ -73,7 +75,7 @@ function createMatch(){
                     if(columnNotation.indexOf(x2) > columnNotation.indexOf(x1)){
                         do{
                             nextTarget = `${columnNotation[columnNotation.indexOf(nextTarget.charAt(0)) + 1] + y1}`;
-                            if(x2 === 'J' || humanPlayer.gameBoard.successfulAttacks.includes(nextTarget) || humanPlayer.gameBoard.missedAttacks.includes(nextTarget)){
+                            if(x2 === 'J' || !isTargetValid(nextTarget)){
                                 attackFromAI();
                                 break;
                             }
@@ -81,7 +83,7 @@ function createMatch(){
                     } else {
                         do{
                             nextTarget = `${columnNotation[columnNotation.indexOf(nextTarget.charAt(0)) - 1] + y1}`;
-                            if(x1 === 'A' || humanPlayer.gameBoard.successfulAttacks.includes(nextTarget) || humanPlayer.gameBoard.missedAttacks.includes(nextTarget)){
+                            if(x1 === 'A' || !isTargetValid(nextTarget)){
                                 attackFromAI();
                                 break;
                             }
@@ -91,7 +93,7 @@ function createMatch(){
                     if(y2 > y1){
                         do{
                             nextTarget = `${x1 + (+nextTarget.slice(1) + 1)}`;
-                            if(y2 === 10 || humanPlayer.gameBoard.successfulAttacks.includes(nextTarget) || humanPlayer.gameBoard.missedAttacks.includes(nextTarget)){
+                            if(y2 === 10 || !isTargetValid(nextTarget)){
                                 attackFromAI();
                                 break;
                             }
@@ -99,7 +101,7 @@ function createMatch(){
                     } else {
                         do{
                             nextTarget = `${x1 + (+nextTarget.slice(1) - 1)}`;
-                            if(y1 === 1 || humanPlayer.gameBoard.successfulAttacks.includes(nextTarget) || humanPlayer.gameBoard.missedAttacks.includes(nextTarget)){
+                            if(y1 === 1 || !isTargetValid(nextTarget)){
                                 attackFromAI();
                                 break;
                             }
@@ -111,15 +113,19 @@ function createMatch(){
 
     }
 
-    function getPotentialTargets(boardCells){
+    function getValidTargets(boardCells){
         let potentialTargets = boardCells.filter((cell) => {
-            let alreadyAttacked = humanPlayer.gameBoard.successfulAttacks.includes(cell);
-            let alreadyMissedAttack = humanPlayer.gameBoard.missedAttacks.includes(cell);
-            //A potential target is one that we didn't attack or miss before
-            return !alreadyAttacked && !alreadyMissedAttack;
+            return isTargetValid(cell);    
         });
 
         return potentialTargets;
+    }
+
+    function isTargetValid(target){
+        let alreadyAttacked = humanPlayer.gameBoard.successfulAttacks.includes(target);
+        let alreadyMissedAttack = humanPlayer.gameBoard.missedAttacks.includes(target);
+        //A potential target is one that we didn't attack or miss before
+        return !alreadyAttacked && !alreadyMissedAttack;
     }
 
     return {humanPlayer, cpu, createPlayer, attackFromAI};

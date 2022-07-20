@@ -29,10 +29,20 @@ test('AI Attack', () => {
     let match = GameModule.createMatch();
     match.cpu.placeRandomShips();
     match.humanPlayer.placeRandomShips();
-
-    match.attackFromAI();
+    //To satisfy the requirement of using receiveAttack() as a function for both players
+    //I decided to make the match object manage the attacks of both players
+    //The attacks come from the UI, and are then handled by the match object
+    //The match object belongs to neither players and simply executes the rules of the game
+    //While having access to the information of both players
+    console.log(match.humanPlayer.gameBoard.shipsOnBoard);
+    for(let i = 0; i < 50; i++){
+        match.attackFromAI();
+    }
+    //The succesful attacks are expected to be on adjacent cells
+    //This shows that the cpu is making somewhat educated guesses on ship positions
     console.log(match.humanPlayer.gameBoard.successfulAttacks);
-    console.log(match.humanPlayer.gameBoard.missedAttacks);
+    //expect an attack from AI to have either been a successful attack on the humanPlayer gameBoard
+    //or a missedAttack on the humanPlayer gameBoard 
     expect(match.humanPlayer.gameBoard.successfulAttacks.length > 0 || match.humanPlayer.gameBoard.missedAttacks.length > 0)
     .toBeTruthy();
 })
