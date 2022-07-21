@@ -12,7 +12,7 @@ function createMatch(){
         //Any player has the ability to place ships randomly on their board
         function placeRandomShips(){
             const shipLengths = [2, 3, 3, 4, 5];
-            const shipNames = ['Patrol Boat', 'Submarine', 'Destroyer', 'Battleship', 'Carrier'];
+            const shipNames = ['patrolboat', 'submarine', 'destroyer', 'battleship', 'carrier'];
             let shipCounter = 0;
             let boardCells = generateBoardCells();
             while(gameBoard.shipsOnBoard.length < 5){
@@ -149,10 +149,8 @@ function createMatch(){
 function generateBoardCells(){
     let boardCells = [];
 
-    for(let i = 0; i < columnNotation.length; i++){
-        for(let j = i*10; j < (i+1)*10; j++){
-            boardCells[j] = `${columnNotation[i] + (j-i*10+1)}`;
-        }
+    for(let i = 0; i < 100; i++){
+        boardCells[i] = `${columnNotation[i%10]+(Math.floor(i/10)+1)}`;
     }
 
     return boardCells;
