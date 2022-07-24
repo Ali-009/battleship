@@ -129,3 +129,16 @@ body, html{
 .battleship{
     background-color: navy;
 }
+
+.destroyer{
+    background-color: grey;
+}
+
+.submarine{
+    background-color: black;
+    border-color: white;
+}
+
+.patrolboat{
+    background-color: darkcyan;
+}
