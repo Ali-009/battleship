@@ -1,5 +1,9 @@
 const GameModule = require('./game-module');
 
+const shipNames = ['carrier', 'battleship', 'destroyer', 'submarine', 'patrolboat'];
+const shipNamesUI = ['Carrier', 'Battleship', 'Destroyer', 'Submarine', 'Patrol Boat'];
+const shipLengths = [5,4,3,3,2];
+
 //Generate an entire board and display it on the page
 function displayGameBoard(){
     let primaryGrid = document.querySelector('.primary-grid');
@@ -12,10 +16,11 @@ function displayGameBoard(){
     //Working on the start button
     let startButton = document.querySelector('.start-button');
     let messageBox = document.querySelector('.message-box');
+    let message = document.querySelector('.message');
     startButton.addEventListener('click', () => {
         startButton.remove();
-
-        messageBox.textContent = 'Choose the Coordinates for Your Carrier: ';
+        let shipCount = 0;
+        message.textContent = `Choose the Coordinates for Your ${shipNamesUI[shipCount]}: `;
 
         let coordinateInput = document.createElement('div');
         coordinateInput.classList.add('coordinate-input-container');
@@ -29,10 +34,41 @@ function displayGameBoard(){
         endPointField.setAttribute('placeholder', 'End Point');
         coordinateSubmit.textContent = 'Enter';
 
-        coordinateSubmit.addEventListener('click', () => {
+        //submits player information and removes the 
+        const submitPlayerShip = function(shipName, shipLength){
+            let message = document.querySelector('.message');
+            let shipValidity = checkCoordinatesValidity([startPointField.value, endPointField.value], shipLength);
+        
+            if(!shipValidity){
+                message.textContent = "Wrong Ship Size";
+                return false;
+            }
+            try{
+                match.humanPlayer.gameBoard.placeShip(shipName, [startPointField.value, endPointField.value]);
+                refreshBoardState();
+            } catch(err){
+                message.textContent = err;
+                return false;
+            }
             
-        })
+            return true;
+        }
 
+        function coordinateSubmitListener(){
+            if(shipCount < 5){
+                let submittedShip = submitPlayerShip(shipNames[shipCount],shipLengths[shipCount]);
+                if(submittedShip){
+                    shipCount++;
+                    coordinateSubmit.removeEventListener('click', coordinateSubmitListener);
+                    coordinateSubmit.addEventListener('click',coordinateSubmitListener);
+                }
+                if(shipCount < 5){
+                    message.textContent = `Choose the Coordinates for Your ${shipNamesUI[shipCount]}: `
+                }
+            }
+        }
+
+        coordinateSubmit.addEventListener('click',coordinateSubmitListener);
 
         coordinateInput.appendChild(startPointField);
         coordinateInput.appendChild(endPointField);
@@ -40,32 +76,21 @@ function displayGameBoard(){
     })
 }
 
-function checkCoordinatesValidity([startPoint, endPoint], lineLength){
+function checkCoordinatesValidity(coordinates, lineLength){
     //Try to get valid board lines from startPoint
-    let validLines = GameModule.getValidBoardLines(startPoint, lineLength);
-    //Check if the user's input lines are valid
-    if(!validLines.includes([startPoint,endPoint])){
-        return false;
-    } else {
-        return true;
+    let validLines = GameModule.getValidBoardLines(coordinates[0], lineLength);
+    let valid;
+
+    //compare our end points, to valid start points
+    for(let i = 0; i < validLines.length; i ++){
+        if(validLines[i][1] === coordinates[1]){
+            valid = true;
+            break;
+        }
     }
 
-}
+    return valid;
 
-function submitPlayerShip(shipName, startPoint, endPoint, shipLength){
-    let messageBox = document.querySelector('.message-box');
-    let shipValidity = checkCoordinatesValidity([startPoint, endPoint], shipLength);
-
-    if(!shipValidity){
-        document.querySelector('.message-box').textContent = "Wrong Ship Size";
-        return;
-    }
-    try{
-        match.humanPlayer.gameBoard.placeShip(shipName, [startPoint, endPoint]);
-        refreshBoardState();
-    } catch(err){
-        messageBox.textContent = err;
-    }
 }
 
 
