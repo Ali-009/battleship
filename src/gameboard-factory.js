@@ -20,7 +20,7 @@ function createGameboard() {
     if (!occupied) {
       shipsOnBoard.push(shipToBePlaced);
     } else {
-      throw new Error("Cannot place ships in overlapping positions");
+      throw new Error("Cannot place ships in overlapping positions. ");
     }
   };
   const receiveAttack = function (attackedCoordinates) {

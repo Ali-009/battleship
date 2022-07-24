@@ -38,16 +38,18 @@ function displayGameBoard(){
         const submitPlayerShip = function(shipName, shipLength){
             let message = document.querySelector('.message');
             let shipValidity = checkCoordinatesValidity([startPointField.value, endPointField.value], shipLength);
+
+            let reminderText = `Please provide valid coordinates for a ${shipNamesUI[shipCount]}`;
         
             if(!shipValidity){
-                message.textContent = "Wrong Ship Size";
+                message.textContent = 'Invalid ship coordinates.' + reminderText;
                 return false;
             }
             try{
                 match.humanPlayer.gameBoard.placeShip(shipName, [startPointField.value, endPointField.value]);
                 refreshBoardState();
             } catch(err){
-                message.textContent = err;
+                message.textContent = err.message + ' ' + reminderText;
                 return false;
             }
             
@@ -59,11 +61,11 @@ function displayGameBoard(){
                 let submittedShip = submitPlayerShip(shipNames[shipCount],shipLengths[shipCount]);
                 if(submittedShip){
                     shipCount++;
+                    if(shipCount < 5){
+                        message.textContent = `Choose the Coordinates for Your ${shipNamesUI[shipCount]}: `
+                    }
                     coordinateSubmit.removeEventListener('click', coordinateSubmitListener);
                     coordinateSubmit.addEventListener('click',coordinateSubmitListener);
-                }
-                if(shipCount < 5){
-                    message.textContent = `Choose the Coordinates for Your ${shipNamesUI[shipCount]}: `
                 }
             }
         }
