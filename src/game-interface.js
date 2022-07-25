@@ -161,14 +161,7 @@ function updateCells(targetGrid, cells, state){
         let currentCell = document.querySelector(
             `${targetGrid} [data-cell="${cells[i]}"]`
         );
-        try{
-            currentCell.classList.add(state);
-        } catch(err){
-            console.log('Successful: ' + match.humanPlayer.gameBoard.successfulAttacks);
-            console.log('Missed: ' + match.humanPlayer.gameBoard.missedAttacks);
-            console.log(`${targetGrid} [data-cell="${cells[i]}"]`)
-        }
-        
+        currentCell.classList.add(state);
     }
 }
 

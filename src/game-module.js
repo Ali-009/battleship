@@ -49,6 +49,7 @@ function createMatch(){
         //Filter out cells that have already been attacked or missed
         let potentialTargets = getValidTargets(boardCells);
         let randomTarget = getRandomCoordinates(potentialTargets);
+        console.log(potentialTargets);
         console.log(randomTarget);
         //Attack random target
         let hit = humanPlayer.gameBoard.receiveAttack(randomTarget);
@@ -64,6 +65,7 @@ function createMatch(){
             //Sometimes the surrounding cells are all invalid
             if(potentialAdjacentTargets.length === 0){
                 attackFromAI();
+                return;
             }
 
             //nextTarget is randomly chosen between cells adjacent to the first randomTarget
@@ -85,7 +87,6 @@ function createMatch(){
                                 attackFromAI();
                                 return;
                             }
-                            console.log(nextTarget);
                         } while(humanPlayer.gameBoard.receiveAttack(nextTarget));
                     } else {
                         do{
@@ -95,7 +96,6 @@ function createMatch(){
                                 attackFromAI();
                                 return;
                             }
-                            console.log(nextTarget);
                         } while(humanPlayer.gameBoard.receiveAttack(nextTarget));
                     }
                 } else if(x1 === x2){
@@ -107,7 +107,6 @@ function createMatch(){
                                 attackFromAI();
                                 return;
                             }
-                            console.log(nextTarget);
                         } while(humanPlayer.gameBoard.receiveAttack(nextTarget));
                     } else {
                         do{
@@ -117,7 +116,6 @@ function createMatch(){
                                 attackFromAI();
                                 return;
                             }
-                            console.log(nextTarget);
                         } while(humanPlayer.gameBoard.receiveAttack(nextTarget));
                     }
                 }
