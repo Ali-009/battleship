@@ -142,3 +142,14 @@ body, html{
 .patrolboat{
     background-color: darkcyan;
 }
+
+/*Classes for marking tracking grid-cells*/
+.attacked::before{
+    content: 'X';
+    color: red;
+}
+
+.missed::before{
+    content: 'O';
+    color: red;
+}
