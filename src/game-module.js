@@ -83,7 +83,7 @@ function createMatch(){
                             nextTarget = `${columnNotation[columnIndex] + y1}`;
                             if(columnIndex > 9 || !isTargetValid(nextTarget)){
                                 attackFromAI();
-                                break;
+                                return;
                             }
                             console.log(nextTarget);
                         } while(humanPlayer.gameBoard.receiveAttack(nextTarget));
@@ -93,7 +93,7 @@ function createMatch(){
                             nextTarget = `${columnNotation[columnIndex] + y1}`;
                             if(columnIndex < 0 || !isTargetValid(nextTarget)){
                                 attackFromAI();
-                                break;
+                                return;
                             }
                             console.log(nextTarget);
                         } while(humanPlayer.gameBoard.receiveAttack(nextTarget));
@@ -101,19 +101,21 @@ function createMatch(){
                 } else if(x1 === x2){
                     if(y2 > y1){
                         do{
-                            nextTarget = `${x1 + (+nextTarget.slice(1) + 1)}`;
-                            if(y2 > 10 || !isTargetValid(nextTarget)){
+                            let yNext = +nextTarget.slice(1) + 1;
+                            nextTarget = `${x1 + yNext}`;
+                            if(yNext > 10 || !isTargetValid(nextTarget)){
                                 attackFromAI();
-                                break;
+                                return;
                             }
                             console.log(nextTarget);
                         } while(humanPlayer.gameBoard.receiveAttack(nextTarget));
                     } else {
                         do{
-                            nextTarget = `${x1 + (+nextTarget.slice(1) - 1)}`;
-                            if(y1 < 1 || !isTargetValid(nextTarget)){
+                            let yNext = +nextTarget.slice(1) - 1
+                            nextTarget = `${x1 + yNext}`;
+                            if(yNext < 1 || !isTargetValid(nextTarget)){
                                 attackFromAI();
-                                break;
+                                return;
                             }
                             console.log(nextTarget);
                         } while(humanPlayer.gameBoard.receiveAttack(nextTarget));
