@@ -48,8 +48,8 @@ function createMatch(){
         let boardCells = generateBoardCells();
         //Filter out cells that have already been attacked or missed
         let potentialTargets = getValidTargets(boardCells);
-
         let randomTarget = getRandomCoordinates(potentialTargets);
+        console.log(randomTarget);
         //Attack random target
         let hit = humanPlayer.gameBoard.receiveAttack(randomTarget);
         if(hit){
@@ -61,6 +61,11 @@ function createMatch(){
             }
             
             let potentialAdjacentTargets = getValidTargets(adjacentCells);
+            //Sometimes the surrounding cells are all invalid
+            if(potentialAdjacentTargets.length === 0){
+                attackFromAI();
+            }
+
             //nextTarget is randomly chosen between cells adjacent to the first randomTarget
             let nextTarget = getRandomCoordinates(potentialAdjacentTargets);
             let successiveHit = humanPlayer.gameBoard.receiveAttack(nextTarget);
@@ -74,37 +79,43 @@ function createMatch(){
                 if(y1 === y2){
                     if(columnNotation.indexOf(x2) > columnNotation.indexOf(x1)){
                         do{
-                            nextTarget = `${columnNotation[columnNotation.indexOf(nextTarget.charAt(0)) + 1] + y1}`;
-                            if(x2 === 'J' || !isTargetValid(nextTarget)){
+                            let columnIndex = columnNotation.indexOf(nextTarget.charAt(0)) + 1;
+                            nextTarget = `${columnNotation[columnIndex] + y1}`;
+                            if(columnIndex > 9 || !isTargetValid(nextTarget)){
                                 attackFromAI();
                                 break;
                             }
+                            console.log(nextTarget);
                         } while(humanPlayer.gameBoard.receiveAttack(nextTarget));
                     } else {
                         do{
-                            nextTarget = `${columnNotation[columnNotation.indexOf(nextTarget.charAt(0)) - 1] + y1}`;
-                            if(x1 === 'A' || !isTargetValid(nextTarget)){
+                            let columnIndex = columnNotation.indexOf(nextTarget.charAt(0)) - 1;
+                            nextTarget = `${columnNotation[columnIndex] + y1}`;
+                            if(columnIndex < 0 || !isTargetValid(nextTarget)){
                                 attackFromAI();
                                 break;
                             }
+                            console.log(nextTarget);
                         } while(humanPlayer.gameBoard.receiveAttack(nextTarget));
                     }
                 } else if(x1 === x2){
                     if(y2 > y1){
                         do{
                             nextTarget = `${x1 + (+nextTarget.slice(1) + 1)}`;
-                            if(y2 === 10 || !isTargetValid(nextTarget)){
+                            if(y2 > 10 || !isTargetValid(nextTarget)){
                                 attackFromAI();
                                 break;
                             }
+                            console.log(nextTarget);
                         } while(humanPlayer.gameBoard.receiveAttack(nextTarget));
                     } else {
                         do{
                             nextTarget = `${x1 + (+nextTarget.slice(1) - 1)}`;
-                            if(y1 === 1 || !isTargetValid(nextTarget)){
+                            if(y1 < 1 || !isTargetValid(nextTarget)){
                                 attackFromAI();
                                 break;
                             }
+                            console.log(nextTarget);
                         } while(humanPlayer.gameBoard.receiveAttack(nextTarget));
                     }
                 }
@@ -114,9 +125,14 @@ function createMatch(){
     }
 
     function getValidTargets(boardCells){
-        let potentialTargets = boardCells.filter((cell) => {
-            return isTargetValid(cell);    
-        });
+        let potentialTargets = [];
+        for(let i = 0; i < boardCells.length; i++){
+            let alreadyAttacked = humanPlayer.gameBoard.successfulAttacks.includes(boardCells[i]);
+            let alreadyMissedAttack = humanPlayer.gameBoard.missedAttacks.includes(boardCells[i]);
+            if(!alreadyAttacked && !alreadyMissedAttack){
+                potentialTargets.push(boardCells[i]);
+            }
+        }
 
         return potentialTargets;
     }

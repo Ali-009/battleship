@@ -47,7 +47,7 @@ function displayGameBoard(){
             }
             try{
                 match.humanPlayer.gameBoard.placeShip(shipName, [startPointField.value, endPointField.value]);
-                refreshBoardState();
+                displayPlayerShips();
             } catch(err){
                 message.textContent = err.message + ' ' + reminderText;
                 return false;
@@ -67,6 +67,26 @@ function displayGameBoard(){
                     coordinateSubmit.removeEventListener('click', coordinateSubmitListener);
                     coordinateSubmit.addEventListener('click',coordinateSubmitListener);
                 }
+            } else {
+                //Remove Coordinate Input
+                coordinateInput.remove();
+                //Setup the AI ships
+                match.cpu.placeRandomShips();
+                //Set up the tracking grid events
+                let trackingGridCells = trackingGrid.querySelectorAll('.grid-cell');
+
+                trackingGridCells.forEach((cell) => {
+                    cell.addEventListener('click', function playerAttackHandler(e){
+                        let attackedCell = e.target.getAttribute('data-cell'); 
+
+                        //Play a round then remove the event listener on this cell
+                        //This is done to avoid registering the same attack twice
+                        match.playRound(attackedCell);
+                        displayBoardState();
+                        cell.removeEventListener('click', playerAttackHandler);
+                    })
+                })
+
             }
         }
 
@@ -107,22 +127,48 @@ function generateGrid(grid){
     }
 }
 
-function refreshBoardState(){
-    //display player ships on board
+function displayPlayerShips(){
     let playerShips = match.humanPlayer.gameBoard.shipsOnBoard;
     for(let i = 0; i < playerShips.length; i++){
-        displayShip(playerShips[i]);
+        for(let j = 0; j < playerShips[i].occupiedCells.length; j++){
+            let currentCell = document.querySelector(
+                `.primary-grid [data-cell="${playerShips[i].occupiedCells[j]}"]`
+            );
+            currentCell.classList.add(playerShips[i].name);            
+        }
     }
 }
 
-function displayShip(ship){
-    if(ship.occupiedCells.length > 0){
-        for(let i = 0; i < ship.occupiedCells.length; i++){
-            let currentCell = document.querySelector(
-                `[data-cell="${ship.occupiedCells[i]}"]`
-            );
-            currentCell.classList.add(ship.name);
+function displayBoardState(){
+    //Human player results being displayed
+    let playerSuccessfulAttacks = match.cpu.gameBoard.successfulAttacks;
+    let playerMissedAttacks = match.cpu.gameBoard.missedAttacks;
+    updateCells('.tracking-grid', playerSuccessfulAttacks, 'attacked');
+    updateCells('.tracking-grid', playerMissedAttacks, 'missed');
+
+    //AI results being displayed
+    let cpuSuccessfulAttacks = match.humanPlayer.gameBoard.successfulAttacks;
+    let cpuMiseedAttacks = match.humanPlayer.gameBoard.missedAttacks;
+    updateCells('.primary-grid', cpuSuccessfulAttacks, 'attacked');
+    updateCells('.primary-grid', cpuMiseedAttacks, 'missed');
+
+
+}
+//Displays whether a cell received a successful attack or a miss
+//And which targetGrid should we display the result on
+function updateCells(targetGrid, cells, state){
+    for(let i =0; i < cells.length; i++){
+        let currentCell = document.querySelector(
+            `${targetGrid} [data-cell="${cells[i]}"]`
+        );
+        try{
+            currentCell.classList.add(state);
+        } catch(err){
+            console.log('Successful: ' + match.humanPlayer.gameBoard.successfulAttacks);
+            console.log('Missed: ' + match.humanPlayer.gameBoard.missedAttacks);
+            console.log(`${targetGrid} [data-cell="${cells[i]}"]`)
         }
+        
     }
 }
 
