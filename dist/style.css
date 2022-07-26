@@ -39,7 +39,7 @@ body, html{
     grid-column: 1 / 3;
     grid-row: 3 / 4;
     margin-top: 32px;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
 
     justify-self: center;
     display: flex;
