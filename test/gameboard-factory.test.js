@@ -69,7 +69,7 @@ describe("Game Over", () => {
     gameBoard.receiveAttack("A3");
     gameBoard.receiveAttack("A2");
     gameBoard.receiveAttack("A5");
-  
+
     expect(gameBoard.isGameOver()).toBe(true);
   });
 
