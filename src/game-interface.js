@@ -1,5 +1,6 @@
 const GameModule = require('./game-module');
 
+const columnNotation = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 const shipNames = ['carrier', 'battleship', 'destroyer', 'submarine', 'patrolboat'];
 const shipNamesUI = ['Carrier', 'Battleship', 'Destroyer', 'Submarine', 'Patrol Boat'];
 const shipLengths = [5,4,3,3,2];
@@ -124,9 +125,6 @@ function checkCoordinatesValidity(coordinates, lineLength){
     return valid;
 
 }
-
-
-const columnNotation = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
 function generateGrid(grid){
     for(let i = 0; i< 100; i++){
