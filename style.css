@@ -111,6 +111,9 @@ body, html{
     border: solid thin black;
     box-sizing: border-box;
     height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /*The elements under the classes below were dynamically created in JavaScript*/
@@ -123,11 +126,11 @@ body, html{
 
 /*classes for coloring cells occupied with ships*/
 .carrier{
-    background-color:#d0ba96;
+    background-color:#d1bc99;
 }
 
 .battleship{
-    background-color: navy;
+    background-color: rgb(100, 100, 143);
 }
 
 .destroyer{
@@ -140,16 +143,17 @@ body, html{
 }
 
 .patrolboat{
-    background-color: darkcyan;
+    background-color: lightgrey;
 }
 
 /*Classes for marking tracking grid-cells*/
 .attacked::before{
-    content: 'X';
+    content: '❌';
     color: red;
 }
 
 .missed::before{
-    content: 'O';
-    color: red;
+    content: '⊙';
+    color: lightgrey;
+    font-size: 2rem;
 }
