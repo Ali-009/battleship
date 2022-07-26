@@ -48,9 +48,10 @@ function createMatch(){
         let boardCells = generateBoardCells();
         //Filter out cells that have already been attacked or missed
         let potentialTargets = getValidTargets(boardCells);
+        if(potentialTargets.length === 0){
+            return;
+        }
         let randomTarget = getRandomCoordinates(potentialTargets);
-        console.log(potentialTargets);
-        console.log(randomTarget);
         //Attack random target
         let hit = humanPlayer.gameBoard.receiveAttack(randomTarget);
         if(hit){

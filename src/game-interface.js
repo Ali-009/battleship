@@ -34,7 +34,7 @@ function displayGameBoard(){
         endPointField.setAttribute('placeholder', 'End Point');
         coordinateSubmit.textContent = 'Enter';
 
-        //submits player information and removes the 
+        //submits player information 
         const submitPlayerShip = function(shipName, shipLength){
             let message = document.querySelector('.message');
             let shipValidity = checkCoordinatesValidity([startPointField.value, endPointField.value], shipLength);
@@ -42,12 +42,12 @@ function displayGameBoard(){
             let reminderText = `Please provide valid coordinates for a ${shipNamesUI[shipCount]}`;
         
             if(!shipValidity){
-                message.textContent = 'Invalid ship coordinates.' + reminderText;
+                message.textContent = 'Invalid ship coordinates. ' + reminderText;
                 return false;
             }
             try{
                 match.humanPlayer.gameBoard.placeShip(shipName, [startPointField.value, endPointField.value]);
-                displayPlayerShips();
+                displayPlayerShips(match.humanPlayer, '.primary-grid');
             } catch(err){
                 message.textContent = err.message + ' ' + reminderText;
                 return false;
@@ -67,9 +67,12 @@ function displayGameBoard(){
                     coordinateSubmit.removeEventListener('click', coordinateSubmitListener);
                     coordinateSubmit.addEventListener('click',coordinateSubmitListener);
                 }
-            } else {
+            }
+            
+            if(shipCount === 5){
                 //Remove Coordinate Input
                 coordinateInput.remove();
+                message.textContent = 'You can now attack the AI\'s ships on the trakcing gird. Note that a player geting a hit gives them an additional turn.';
                 //Setup the AI ships
                 match.cpu.placeRandomShips();
                 //Set up the tracking grid events
@@ -82,6 +85,13 @@ function displayGameBoard(){
                         //Play a round then remove the event listener on this cell
                         //This is done to avoid registering the same attack twice
                         match.playRound(attackedCell);
+                        if(match.humanPlayer.gameBoard.isGameOver()){
+                            message.textContent = 'Game Over. You Lost.';
+                            displayPlayerShips(match.cpu, '.tracking-grid');
+                        } else if (match.cpu.gameBoard.isGameOver()){
+                            message.textContent = 'Congrats! You Won.';
+                            displayPlayerShips(match.cpu, '.tracking-grid');
+                        }
                         displayBoardState();
                         cell.removeEventListener('click', playerAttackHandler);
                     })
@@ -127,12 +137,12 @@ function generateGrid(grid){
     }
 }
 
-function displayPlayerShips(){
-    let playerShips = match.humanPlayer.gameBoard.shipsOnBoard;
+function displayPlayerShips(playerObject, targetGrid){
+    let playerShips = playerObject.gameBoard.shipsOnBoard;
     for(let i = 0; i < playerShips.length; i++){
         for(let j = 0; j < playerShips[i].occupiedCells.length; j++){
             let currentCell = document.querySelector(
-                `.primary-grid [data-cell="${playerShips[i].occupiedCells[j]}"]`
+                `${targetGrid} [data-cell="${playerShips[i].occupiedCells[j]}"]`
             );
             currentCell.classList.add(playerShips[i].name);            
         }
@@ -163,13 +173,6 @@ function updateCells(targetGrid, cells, state){
         );
         currentCell.classList.add(state);
     }
-}
-
-function findShip(shipName){
-    //fetching occupied cells
-    let requestedShip = match.humanPlayer.gameBoard.shipsOnBoard
-        .find((ship) => ship.name === shipName);
-    return requestedShip;
 }
 
 //Starting the match
